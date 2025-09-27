@@ -26,9 +26,8 @@ services:
           type: redis
           property: connectionString
 
-  - type: static
+  - type: static_site
     name: gait-frontend
-    env: static
     buildCommand: bash deploy/render-frontend-build.sh
     publishPath: frontend/build/web
     # Flutter Webのビルド時にバックエンドのURLを埋め込む
