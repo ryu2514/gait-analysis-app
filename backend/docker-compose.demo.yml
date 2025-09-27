@@ -1,0 +1,128 @@
+version: '3.8'
+
+services:
+  gait-api-demo:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - ENVIRONMENT=demo
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=demo
+      - DEBUG=True
+      - LOG_LEVEL=INFO
+      - ENABLE_ENHANCED_FEATURES=true
+      - ENABLE_30S_OPTIMIZATION=true
+      - MAX_VIDEO_SIZE_MB=100
+      - MAX_VIDEO_DURATION_SEC=30
+      - DEMO_MODE=true
+    volumes:
+      - ./app:/app/app
+      - ./static:/app/static
+      - ./demo_data:/app/demo_data
+      - ./reports:/app/reports
+      - /tmp:/tmp
+    env_file:
+      - .env.demo
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '2.0'
+        reservations:
+          memory: 2G
+          cpus: '1.0'
+
+  # Redis for caching and performance optimization
+  redis-demo:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_demo_data:/data
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Database for demo (SQLite upgraded to PostgreSQL)
+  postgres-demo:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: gait_analysis_demo
+      POSTGRES_USER: demo_user
+      POSTGRES_PASSWORD: demo_password_2024
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --locale=C"
+    volumes:
+      - postgres_demo_data:/var/lib/postgresql/data
+      - ./demo_data/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U demo_user -d gait_analysis_demo"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Nginx for demo frontend serving and API proxy
+  nginx-demo:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/demo.conf:/etc/nginx/conf.d/default.conf
+      - ./frontend/build:/usr/share/nginx/html
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - gait-api-demo
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Monitoring service for demo
+  prometheus-demo:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.demo.yml:/etc/prometheus/prometheus.yml
+      - prometheus_demo_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+
+volumes:
+  postgres_demo_data:
+    driver: local
+  redis_demo_data:
+    driver: local
+  prometheus_demo_data:
+    driver: local
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

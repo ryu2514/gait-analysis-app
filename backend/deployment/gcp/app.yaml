@@ -1,0 +1,49 @@
+# Google App Engine configuration for Gait Analysis API
+runtime: python311
+
+# インスタンス設定
+instance_class: F4_1G
+automatic_scaling:
+  min_instances: 1
+  max_instances: 10
+  target_cpu_utilization: 0.6
+
+# 環境変数
+env_variables:
+  DEBUG: "False"
+  LOG_LEVEL: "INFO"
+  GOOGLE_CLOUD_PROJECT: "your-project-id"
+  
+# ヘルスチェック
+readiness_check:
+  path: "/api/v1/health"
+  check_interval_sec: 5
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 2
+
+liveness_check:
+  path: "/api/v1/health"
+  check_interval_sec: 30
+  timeout_sec: 4
+  failure_threshold: 4
+  success_threshold: 2
+
+# VPCコネクタ（Cloud SQL接続用）
+vpc_access_connector:
+  name: "projects/your-project-id/locations/us-central1/connectors/gait-analysis-connector"
+
+# スキップするファイル
+skip_files:
+  - ^(.*/)?#.*#$
+  - ^(.*/)?.*~$
+  - ^(.*/)?.*\.py[co]$
+  - ^(.*/)?.*/RCS/.*$
+  - ^(.*/)?\..*$
+  - ^(.*/)?tests/.*$
+  - ^(.*/)?test_.*\.py$
+  - ^(.*/)?venv/.*$
+  - ^(.*/)?\.venv/.*$
+  - ^(.*/)?__pycache__/.*$
+  - ^(.*/)?node_modules/.*$
+  - ^(.*/)?\.git/.*$

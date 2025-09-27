@@ -1,0 +1,150 @@
+# Prometheus Alert Rules for Gait Analysis API
+
+groups:
+  - name: gait_analysis_api_alerts
+    rules:
+      # API Health Alerts
+      - alert: APIDown
+        expr: up{job="gait-analysis-api"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Gait Analysis API is down"
+          description: "The Gait Analysis API has been down for more than 1 minute."
+
+      - alert: HighResponseTime
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job="gait-analysis-api"}[5m])) > 5
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High response time"
+          description: "95th percentile response time is above 5 seconds for more than 2 minutes."
+
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{job="gait-analysis-api",status=~"5.."}[5m]) / rate(http_requests_total{job="gait-analysis-api"}[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate"
+          description: "Error rate is above 5% for more than 5 minutes."
+
+      # Resource Usage Alerts
+      - alert: HighCPUUsage
+        expr: cpu_usage_percent{job="gait-analysis-api"} > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU usage is above 80% for more than 5 minutes."
+
+      - alert: HighMemoryUsage
+        expr: memory_usage_percent{job="gait-analysis-api"} > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage is above 85% for more than 5 minutes."
+
+      - alert: LowDiskSpace
+        expr: disk_free_percent{job="gait-analysis-api"} < 10
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Low disk space"
+          description: "Disk space is below 10%."
+
+  - name: database_alerts
+    rules:
+      # Database Alerts
+      - alert: DatabaseDown
+        expr: up{job="postgres"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "PostgreSQL database is down"
+          description: "The PostgreSQL database has been down for more than 1 minute."
+
+      - alert: DatabaseHighConnections
+        expr: pg_stat_database_numbackends / pg_settings_max_connections > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High database connections"
+          description: "Database connections are above 80% of max connections."
+
+      - alert: DatabaseSlowQueries
+        expr: rate(pg_stat_database_blk_read_time[5m]) / rate(pg_stat_database_blks_read[5m]) > 100
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Slow database queries"
+          description: "Average query time is above 100ms."
+
+  - name: redis_alerts
+    rules:
+      # Redis Alerts
+      - alert: RedisDown
+        expr: up{job="redis"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Redis is down"
+          description: "Redis has been down for more than 1 minute."
+
+      - alert: RedisHighMemoryUsage
+        expr: redis_memory_used_bytes / redis_memory_max_bytes > 0.9
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High Redis memory usage"
+          description: "Redis memory usage is above 90%."
+
+      - alert: RedisHighConnections
+        expr: redis_connected_clients > 100
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High Redis connections"
+          description: "Redis has more than 100 connected clients."
+
+  - name: business_logic_alerts
+    rules:
+      # Business Logic Alerts
+      - alert: HighFailedAnalyses
+        expr: rate(gait_analysis_failed_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High failed analyses rate"
+          description: "Failed analysis rate is above 10% for more than 5 minutes."
+
+      - alert: LongProcessingTime
+        expr: histogram_quantile(0.95, rate(gait_analysis_processing_duration_seconds_bucket[5m])) > 300
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Long processing time"
+          description: "95th percentile processing time is above 5 minutes."
+
+      - alert: HighVideoUploadFailures
+        expr: rate(video_upload_failed_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High video upload failures"
+          description: "Video upload failure rate is above 5%."

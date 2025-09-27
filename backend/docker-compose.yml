@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  gait-api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      - LOG_LEVEL=DEBUG
+    volumes:
+      - ./app:/app/app
+      - ./static:/app/static
+      - /tmp:/tmp
+    env_file:
+      - .env
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # 将来のデータベース用
+  # postgres:
+  #   image: postgres:15
+  #   environment:
+  #     POSTGRES_DB: gait_analysis
+  #     POSTGRES_USER: gait_user
+  #     POSTGRES_PASSWORD: gait_password
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+
+  # Redis（キャッシュ・セッション用）
+  # redis:
+  #   image: redis:7-alpine
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis_data:/data
+
+volumes:
+  postgres_data:
+  redis_data:

@@ -1,0 +1,2080 @@
+components:
+  schemas:
+    Body_analyze_gait_api_v1_gait_analysis_analyze_post:
+      properties:
+        video:
+          format: binary
+          title: Video
+          type: string
+      required:
+      - video
+      title: Body_analyze_gait_api_v1_gait_analysis_analyze_post
+      type: object
+    Body_analyze_gait_enhanced_api_v1_gait_analysis_analyze_enhanced_post:
+      properties:
+        video:
+          format: binary
+          title: Video
+          type: string
+      required:
+      - video
+      title: Body_analyze_gait_enhanced_api_v1_gait_analysis_analyze_enhanced_post
+      type: object
+    Body_generate_custom_report_api_v1_reports_generate_custom_post:
+      properties:
+        analysis_result:
+          $ref: '#/components/schemas/GaitAnalysisResponse'
+        patient_info:
+          anyOf:
+          - type: object
+          - type: 'null'
+          title: Patient Info
+        template_config:
+          title: Template Config
+          type: object
+      required:
+      - analysis_result
+      - template_config
+      title: Body_generate_custom_report_api_v1_reports_generate_custom_post
+      type: object
+    Body_generate_pdf_report_api_v1_reports_generate_pdf_post:
+      properties:
+        analysis_result:
+          $ref: '#/components/schemas/GaitAnalysisResponse'
+        patient_info:
+          anyOf:
+          - type: object
+          - type: 'null'
+          title: Patient Info
+      required:
+      - analysis_result
+      title: Body_generate_pdf_report_api_v1_reports_generate_pdf_post
+      type: object
+    Body_save_analysis_to_history_api_v1_history_analyses__analysis_id__save_post:
+      properties:
+        analysis_result:
+          $ref: '#/components/schemas/GaitAnalysisResponse'
+        video_info:
+          anyOf:
+          - type: object
+          - type: 'null'
+          title: Video Info
+      required:
+      - analysis_result
+      title: Body_save_analysis_to_history_api_v1_history_analyses__analysis_id__save_post
+      type: object
+    GaitAnalysisResponse:
+      description: 歩行分析レスポンス
+      properties:
+        analysis_id:
+          description: 分析ID
+          title: Analysis Id
+          type: string
+        analysis_settings:
+          description: 分析設定
+          title: Analysis Settings
+          type: object
+        gait_cycles:
+          description: 検出された歩行周期
+          items:
+            $ref: '#/components/schemas/GaitCycle'
+          title: Gait Cycles
+          type: array
+        gait_cycles_detected:
+          description: 検出された歩行周期数
+          title: Gait Cycles Detected
+          type: integer
+        joint_angles:
+          anyOf:
+          - $ref: '#/components/schemas/JointAngles'
+          - type: 'null'
+        overall_gait_score:
+          description: 総合歩行スコア（0-100）
+          title: Overall Gait Score
+          type: number
+        pose_detection_confidence:
+          description: 姿勢検出信頼度
+          title: Pose Detection Confidence
+          type: number
+        processing_time_seconds:
+          description: 処理時間（秒）
+          title: Processing Time Seconds
+          type: number
+        recommendations:
+          description: 改善提案
+          items:
+            type: string
+          title: Recommendations
+          type: array
+        spatiotemporal_params:
+          anyOf:
+          - $ref: '#/components/schemas/SpatiotemporalParameters'
+          - type: 'null'
+        status:
+          description: 分析状態
+          title: Status
+          type: string
+        symmetry_indices:
+          anyOf:
+          - $ref: '#/components/schemas/SymmetryIndices'
+          - type: 'null'
+        timestamp:
+          description: 分析完了時刻
+          format: date-time
+          title: Timestamp
+          type: string
+        video_info:
+          description: 動画情報
+          title: Video Info
+          type: object
+        video_quality_score:
+          description: 動画品質スコア（0-100）
+          title: Video Quality Score
+          type: number
+      required:
+      - analysis_id
+      - status
+      - processing_time_seconds
+      - video_quality_score
+      - pose_detection_confidence
+      - gait_cycles_detected
+      - overall_gait_score
+      title: GaitAnalysisResponse
+      type: object
+    GaitCycle:
+      description: 歩行周期データ
+      properties:
+        ankle_dorsiflexion_peak_deg:
+          description: 足関節最大背屈角度
+          title: Ankle Dorsiflexion Peak Deg
+          type: number
+        cycle_id:
+          description: 周期ID
+          title: Cycle Id
+          type: string
+        duration_seconds:
+          description: 周期時間（秒）
+          title: Duration Seconds
+          type: number
+        end_frame:
+          description: 終了フレーム
+          title: End Frame
+          type: integer
+        hip_flexion_peak_deg:
+          description: 股関節最大屈曲角度
+          title: Hip Flexion Peak Deg
+          type: number
+        knee_flexion_peak_deg:
+          description: 膝関節最大屈曲角度
+          title: Knee Flexion Peak Deg
+          type: number
+        phase_timings:
+          additionalProperties:
+            type: number
+          description: フェーズタイミング
+          title: Phase Timings
+          type: object
+        side:
+          description: 左右（left/right）
+          title: Side
+          type: string
+        stance_ratio:
+          description: 立脚比率
+          title: Stance Ratio
+          type: number
+        stance_time_seconds:
+          description: 立脚時間（秒）
+          title: Stance Time Seconds
+          type: number
+        start_frame:
+          description: 開始フレーム
+          title: Start Frame
+          type: integer
+        step_length_m:
+          description: 歩幅（m）
+          title: Step Length M
+          type: number
+        step_width_m:
+          description: 歩隔（m）
+          title: Step Width M
+          type: number
+        swing_time_seconds:
+          description: 遊脚時間（秒）
+          title: Swing Time Seconds
+          type: number
+      required:
+      - cycle_id
+      - start_frame
+      - end_frame
+      - duration_seconds
+      - side
+      - step_length_m
+      - step_width_m
+      - stance_time_seconds
+      - swing_time_seconds
+      - stance_ratio
+      - hip_flexion_peak_deg
+      - knee_flexion_peak_deg
+      - ankle_dorsiflexion_peak_deg
+      title: GaitCycle
+      type: object
+    Gender:
+      description: 性別
+      enum:
+      - male
+      - female
+      - other
+      title: Gender
+      type: string
+    HTTPAuthorizationCredentials:
+      description: 'The HTTP authorization credentials in the result of using `HTTPBearer`
+        or
+
+        `HTTPDigest` in a dependency.
+
+
+        The HTTP authorization header value is split by the first space.
+
+
+        The first part is the `scheme`, the second part is the `credentials`.
+
+
+        For example, in an HTTP Bearer token scheme, the client will send a header
+
+        like:
+
+
+        ```
+
+        Authorization: Bearer deadbeef12346
+
+        ```
+
+
+        In this case:
+
+
+        * `scheme` will have the value `"Bearer"`
+
+        * `credentials` will have the value `"deadbeef12346"`'
+      properties:
+        credentials:
+          title: Credentials
+          type: string
+        scheme:
+          title: Scheme
+          type: string
+      required:
+      - scheme
+      - credentials
+      title: HTTPAuthorizationCredentials
+      type: object
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          title: Detail
+          type: array
+      title: HTTPValidationError
+      type: object
+    JointAngles:
+      description: 関節角度データ
+      properties:
+        ankle_dorsiflexion_deg:
+          description: 足関節背屈角度時系列
+          items:
+            type: number
+          title: Ankle Dorsiflexion Deg
+          type: array
+        ankle_plantarflexion_deg:
+          description: 足関節底屈角度時系列
+          items:
+            type: number
+          title: Ankle Plantarflexion Deg
+          type: array
+        ankle_toe_off_deg:
+          default: 0.0
+          description: トーオフ時足関節角度
+          title: Ankle Toe Off Deg
+          type: number
+        frame_timestamps:
+          description: フレームタイムスタンプ
+          items:
+            type: number
+          title: Frame Timestamps
+          type: array
+        hip_abduction_deg:
+          description: 股関節外転角度時系列
+          items:
+            type: number
+          title: Hip Abduction Deg
+          type: array
+        hip_extension_deg:
+          description: 股関節伸展角度時系列
+          items:
+            type: number
+          title: Hip Extension Deg
+          type: array
+        hip_flexion_deg:
+          description: 股関節屈曲角度時系列
+          items:
+            type: number
+          title: Hip Flexion Deg
+          type: array
+        hip_rom_deg:
+          default: 0.0
+          description: 股関節可動域
+          title: Hip Rom Deg
+          type: number
+        knee_flexion_deg:
+          description: 膝関節屈曲角度時系列
+          items:
+            type: number
+          title: Knee Flexion Deg
+          type: array
+        knee_heel_contact_deg:
+          default: 0.0
+          description: ヒールコンタクト時膝関節角度
+          title: Knee Heel Contact Deg
+          type: number
+        knee_max_flexion_deg:
+          default: 0.0
+          description: 膝関節最大屈曲角度
+          title: Knee Max Flexion Deg
+          type: number
+        pelvic_drop_deg:
+          description: 骨盤傾斜角度時系列
+          items:
+            type: number
+          title: Pelvic Drop Deg
+          type: array
+        pelvic_list_deg:
+          description: 骨盤リスト（左右傾き）
+          items:
+            type: number
+          title: Pelvic List Deg
+          type: array
+        trunk_rotation_deg:
+          description: 体幹回旋角度時系列
+          items:
+            type: number
+          title: Trunk Rotation Deg
+          type: array
+      title: JointAngles
+      type: object
+    PasswordReset:
+      description: パスワードリセットリクエスト
+      properties:
+        email:
+          description: メールアドレス
+          title: Email
+          type: string
+      required:
+      - email
+      title: PasswordReset
+      type: object
+    SpatiotemporalParameters:
+      description: 時空間パラメータ
+      properties:
+        cadence_steps_per_min:
+          description: ケイデンス（歩/分）
+          title: Cadence Steps Per Min
+          type: integer
+        double_support_time_s:
+          description: 両脚支持時間（秒）
+          title: Double Support Time S
+          type: number
+        gait_speed_ms:
+          description: 歩行速度（m/s）
+          title: Gait Speed Ms
+          type: number
+        left_stance_time_s:
+          description: 左脚立脚時間（秒）
+          title: Left Stance Time S
+          type: number
+        left_step_length_m:
+          description: 左脚歩幅（m）
+          title: Left Step Length M
+          type: number
+        right_stance_time_s:
+          description: 右脚立脚時間（秒）
+          title: Right Stance Time S
+          type: number
+        right_step_length_m:
+          description: 右脚歩幅（m）
+          title: Right Step Length M
+          type: number
+        stride_length_m:
+          description: 歩幅（m）
+          title: Stride Length M
+          type: number
+        stride_time_s:
+          description: 歩行周期時間（秒）
+          title: Stride Time S
+          type: number
+      required:
+      - gait_speed_ms
+      - cadence_steps_per_min
+      - stride_length_m
+      - stride_time_s
+      - left_step_length_m
+      - right_step_length_m
+      - left_stance_time_s
+      - right_stance_time_s
+      - double_support_time_s
+      title: SpatiotemporalParameters
+      type: object
+    SymmetryIndices:
+      description: 対称性指標
+      properties:
+        ankle_dorsiflexion_symmetry_percent:
+          description: 足関節背屈対称性（%）
+          title: Ankle Dorsiflexion Symmetry Percent
+          type: number
+        hip_flexion_symmetry_percent:
+          description: 股関節屈曲対称性（%）
+          title: Hip Flexion Symmetry Percent
+          type: number
+        knee_flexion_symmetry_percent:
+          description: 膝関節屈曲対称性（%）
+          title: Knee Flexion Symmetry Percent
+          type: number
+        overall_symmetry_score:
+          description: 総合対称性スコア（0-100）
+          title: Overall Symmetry Score
+          type: number
+        stance_time_symmetry_percent:
+          description: 立脚時間対称性（%）
+          title: Stance Time Symmetry Percent
+          type: number
+        step_length_symmetry_percent:
+          description: 歩幅対称性（%）
+          title: Step Length Symmetry Percent
+          type: number
+        swing_time_symmetry_percent:
+          description: 遊脚時間対称性（%）
+          title: Swing Time Symmetry Percent
+          type: number
+      required:
+      - step_length_symmetry_percent
+      - stance_time_symmetry_percent
+      - swing_time_symmetry_percent
+      - hip_flexion_symmetry_percent
+      - knee_flexion_symmetry_percent
+      - ankle_dorsiflexion_symmetry_percent
+      - overall_symmetry_score
+      title: SymmetryIndices
+      type: object
+    TokenResponse:
+      description: トークンレスポンス
+      properties:
+        access_token:
+          description: アクセストークン
+          title: Access Token
+          type: string
+        expires_in:
+          description: 有効期限（秒）
+          title: Expires In
+          type: integer
+        token_type:
+          default: bearer
+          description: トークンタイプ
+          title: Token Type
+          type: string
+        user:
+          allOf:
+          - $ref: '#/components/schemas/UserResponse'
+          description: ユーザー情報
+      required:
+      - access_token
+      - expires_in
+      - user
+      title: TokenResponse
+      type: object
+    UserCreate:
+      description: ユーザー作成リクエスト
+      properties:
+        age:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          description: 年齢
+          title: Age
+        email:
+          description: メールアドレス
+          title: Email
+          type: string
+        full_name:
+          description: フルネーム
+          title: Full Name
+          type: string
+        gender:
+          anyOf:
+          - $ref: '#/components/schemas/Gender'
+          - type: 'null'
+          description: 性別
+        height_cm:
+          anyOf:
+          - type: number
+          - type: 'null'
+          description: 身長（cm）
+          title: Height Cm
+        password:
+          description: パスワード
+          title: Password
+          type: string
+        weight_kg:
+          anyOf:
+          - type: number
+          - type: 'null'
+          description: 体重（kg）
+          title: Weight Kg
+      required:
+      - email
+      - password
+      - full_name
+      title: UserCreate
+      type: object
+    UserLogin:
+      description: ログインリクエスト
+      properties:
+        email:
+          description: メールアドレス
+          title: Email
+          type: string
+        password:
+          description: パスワード
+          title: Password
+          type: string
+      required:
+      - email
+      - password
+      title: UserLogin
+      type: object
+    UserResponse:
+      description: ユーザーレスポンス（パスワードなし）
+      properties:
+        age:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Age
+        created_at:
+          format: date-time
+          title: Created At
+          type: string
+        email:
+          title: Email
+          type: string
+        full_name:
+          title: Full Name
+          type: string
+        gender:
+          anyOf:
+          - $ref: '#/components/schemas/Gender'
+          - type: 'null'
+        height_cm:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Height Cm
+        id:
+          title: Id
+          type: string
+        is_active:
+          title: Is Active
+          type: boolean
+        is_verified:
+          title: Is Verified
+          type: boolean
+        language:
+          title: Language
+          type: string
+        last_login:
+          anyOf:
+          - format: date-time
+            type: string
+          - type: 'null'
+          title: Last Login
+        timezone:
+          title: Timezone
+          type: string
+        updated_at:
+          format: date-time
+          title: Updated At
+          type: string
+        user_type:
+          $ref: '#/components/schemas/UserType'
+        weight_kg:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Weight Kg
+      required:
+      - id
+      - email
+      - full_name
+      - user_type
+      - created_at
+      - updated_at
+      - is_active
+      - is_verified
+      - timezone
+      - language
+      title: UserResponse
+      type: object
+    UserStats:
+      description: ユーザー統計情報
+      properties:
+        account_created_days:
+          description: アカウント作成からの日数
+          title: Account Created Days
+          type: integer
+        average_score:
+          description: 平均スコア
+          title: Average Score
+          type: number
+        latest_analysis_date:
+          anyOf:
+          - format: date-time
+            type: string
+          - type: 'null'
+          description: 最新分析日時
+          title: Latest Analysis Date
+        streak_days:
+          default: 0
+          description: 連続使用日数
+          title: Streak Days
+          type: integer
+        this_month_analyses:
+          description: 今月の分析回数
+          title: This Month Analyses
+          type: integer
+        total_analyses:
+          description: 総分析回数
+          title: Total Analyses
+          type: integer
+      required:
+      - total_analyses
+      - this_month_analyses
+      - average_score
+      - account_created_days
+      title: UserStats
+      type: object
+    UserType:
+      description: ユーザータイプ
+      enum:
+      - standard
+      - premium
+      - professional
+      - admin
+      title: UserType
+      type: string
+    UserUpdate:
+      description: ユーザー更新リクエスト
+      properties:
+        age:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          description: 年齢
+          title: Age
+        full_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: フルネーム
+          title: Full Name
+        gender:
+          anyOf:
+          - $ref: '#/components/schemas/Gender'
+          - type: 'null'
+          description: 性別
+        height_cm:
+          anyOf:
+          - type: number
+          - type: 'null'
+          description: 身長（cm）
+          title: Height Cm
+        language:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: 言語設定
+          title: Language
+        timezone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: タイムゾーン
+          title: Timezone
+        weight_kg:
+          anyOf:
+          - type: number
+          - type: 'null'
+          description: 体重（kg）
+          title: Weight Kg
+      title: UserUpdate
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          title: Location
+          type: array
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+      type: object
+  securitySchemes:
+    BearerAuth:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http
+    FirebaseAuth:
+      flows:
+        implicit:
+          authorizationUrl: https://accounts.google.com/o/oauth2/auth
+          scopes:
+            email: Email access
+            openid: OpenID Connect
+            profile: Profile access
+      type: oauth2
+info:
+  contact:
+    email: support@gaitanalysis.com
+    name: Gait Analysis API Support
+  description: "\n    ## Enhanced MediaPipe歩行分析API v2.0\n\n    スマートフォンで撮影した動画から歩行パターンを分析し、\n\
+    \    理学療法士や医療従事者向けの詳細なレポートを生成する拡張APIです。\n\n    ### \U0001F680 新機能（v2.0 Enhanced）\n\
+    \    - **30秒高速処理**: 撮影からレポート出力まで30秒以内\n    - **33ランドマーク活用**: MediaPipe Pose v0.10の全機能\n\
+    \    - **代償動作検出**: 自動アラート機能付き\n    - **重心・バランス分析**: COM軌跡とバランス安定性評価\n    - **拡張出力**:\
+    \ 正規化波形グラフ、スローモーション動画、カラーPDFレポート\n    - **iPad/iPhone最適化**: 60fps対応、横・後方撮影モード\n\
+    \n    ### \U0001F4CA 詳細分析機能\n    - **スパイオテンポラル指標**: ピッチ、歩幅/ストライド長、立脚/遊脚時間、対称性指標\n\
+    \    - **キネマティクス**: 股関節ROM、膝関節詳細角度、足関節背屈/底屈、骨盤・体幹回旋\n    - **代償動作アラート**: アウト/イントゥーイング、膝外反/内反、トレンデレンブルグ、ペルビックドロップ\n\
+    \    - **バランス指標**: COM水平/垂直移動幅、重心投影線2Dマップ\n\n    ### \U0001F3AF 対象ユーザー\n    -\
+    \ **理学療法士**: 詳細な歩行評価と治療計画立案\n    - **作業療法士**: 日常生活動作の評価\n    - **医師**: 診断支援と経過観察\n\
+    \    - **研究者**: 歩行データの定量的解析\n    - **アスリート・トレーナー**: パフォーマンス向上\n\n    ### ⚙️ 技術仕様（Enhanced）\n\
+    \    - **バックエンド**: FastAPI + Python 3.11+\n    - **AI処理**: MediaPipe Pose v0.10\
+    \ + 最高精度モデル\n    - **並列処理**: マルチコア活用による高速化\n    - **データベース**: PostgreSQL + Redis\
+    \ キャッシュ\n    - **認証**: Firebase Auth + JWT\n    - **監視**: リアルタイムパフォーマンス監視\n  \
+    \  - **出力**: PDF/MP4/JSON/CSV 多形式対応\n    "
+  license:
+    name: MIT License
+    url: https://opensource.org/licenses/MIT
+  title: Enhanced MediaPipe Gait Analysis API
+  version: 2.0.0-enhanced
+openapi: 3.1.0
+paths:
+  /:
+    get:
+      description: ルートエンドポイント
+      operationId: root__get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Root
+  /api/v1/auth/firebase:
+    post:
+      description: "Firebase認証ログイン\n\nArgs:\n    firebase_token: FirebaseIDトークン\n\
+        \    request: HTTPリクエスト\n    db: データベースセッション\n    \nReturns:\n    TokenResponse:\
+        \ 認証トークンとユーザー情報"
+      operationId: firebase_login_api_v1_auth_firebase_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HTTPAuthorizationCredentials'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Firebase Login
+      tags:
+      - auth
+      - 認証
+  /api/v1/auth/login:
+    post:
+      description: "ユーザーログイン\n\nArgs:\n    user_data: ログインデータ\n    request: HTTPリクエスト\n\
+        \    db: データベースセッション\n    \nReturns:\n    TokenResponse: 認証トークンとユーザー情報"
+      operationId: login_api_v1_auth_login_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Login
+      tags:
+      - auth
+      - 認証
+  /api/v1/auth/login-history:
+    get:
+      description: "ログイン履歴取得\n\nArgs:\n    limit: 取得件数\n    current_user: 現在のユーザー（認証情報）\n\
+        \    db: データベースセッション\n    \nReturns:\n    dict: ログイン履歴"
+      operationId: get_login_history_api_v1_auth_login_history_get
+      parameters:
+      - in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          title: Limit
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - HTTPBearer: []
+      summary: Get Login History
+      tags:
+      - auth
+      - 認証
+  /api/v1/auth/me:
+    get:
+      description: "現在のユーザー情報取得\n\nArgs:\n    current_user: 現在のユーザー（認証情報）\n    db:\
+        \ データベースセッション\n    \nReturns:\n    UserResponse: ユーザー情報"
+      operationId: get_current_user_info_api_v1_auth_me_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+          description: Successful Response
+      security:
+      - HTTPBearer: []
+      summary: Get Current User Info
+      tags:
+      - auth
+      - 認証
+    put:
+      description: "現在のユーザー情報更新\n\nArgs:\n    user_data: 更新データ\n    current_user:\
+        \ 現在のユーザー（認証情報）\n    db: データベースセッション\n    \nReturns:\n    UserResponse: 更新後のユーザー情報"
+      operationId: update_current_user_api_v1_auth_me_put
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - HTTPBearer: []
+      summary: Update Current User
+      tags:
+      - auth
+      - 認証
+  /api/v1/auth/password/reset:
+    post:
+      description: "パスワードリセット要求\n\nArgs:\n    reset_data: パスワードリセットデータ\n    db: データベースセッション\n\
+        \    \nReturns:\n    dict: リセット要求結果"
+      operationId: request_password_reset_api_v1_auth_password_reset_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordReset'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Request Password Reset
+      tags:
+      - auth
+      - 認証
+  /api/v1/auth/register:
+    post:
+      description: "新規ユーザー登録\n\nArgs:\n    user_data: ユーザー登録データ\n    request: HTTPリクエスト\n\
+        \    db: データベースセッション\n    \nReturns:\n    TokenResponse: 認証トークンとユーザー情報"
+      operationId: register_api_v1_auth_register_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Register
+      tags:
+      - auth
+      - 認証
+  /api/v1/auth/stats:
+    get:
+      description: "ユーザー統計情報取得\n\nArgs:\n    current_user: 現在のユーザー（認証情報）\n    db:\
+        \ データベースセッション\n    \nReturns:\n    UserStats: ユーザー統計情報"
+      operationId: get_user_statistics_api_v1_auth_stats_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserStats'
+          description: Successful Response
+      security:
+      - HTTPBearer: []
+      summary: Get User Statistics
+      tags:
+      - auth
+      - 認証
+  /api/v1/auth/verify-token:
+    post:
+      description: "トークン検証\n\nArgs:\n    current_user: 現在のユーザー（認証情報）\n    \nReturns:\n\
+        \    dict: トークン検証結果"
+      operationId: verify_token_api_v1_auth_verify_token_post
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      security:
+      - HTTPBearer: []
+      summary: Verify Token
+      tags:
+      - auth
+      - 認証
+  /api/v1/docs/generate:
+    post:
+      description: APIドキュメンテーションを再生成
+      operationId: regenerate_documentation_api_v1_docs_generate_post
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      security:
+      - HTTPBearer: []
+      summary: Regenerate Documentation
+      tags:
+      - documentation
+  /api/v1/docs/info:
+    get:
+      description: ドキュメンテーション情報を取得
+      operationId: get_documentation_info_api_v1_docs_info_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Get Documentation Info
+      tags:
+      - documentation
+  /api/v1/docs/markdown:
+    get:
+      description: マークダウン形式のAPIドキュメントを取得
+      operationId: get_markdown_documentation_api_v1_docs_markdown_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Get Markdown Documentation
+      tags:
+      - documentation
+  /api/v1/docs/openapi.json:
+    get:
+      description: OpenAPI仕様書をJSON形式で取得
+      operationId: get_openapi_json_api_v1_docs_openapi_json_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Get Openapi Json
+      tags:
+      - documentation
+  /api/v1/docs/openapi.yaml:
+    get:
+      description: OpenAPI仕様書をYAML形式で取得
+      operationId: get_openapi_yaml_api_v1_docs_openapi_yaml_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Get Openapi Yaml
+      tags:
+      - documentation
+  /api/v1/docs/postman:
+    get:
+      description: Postmanコレクションを取得
+      operationId: get_postman_collection_api_v1_docs_postman_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Get Postman Collection
+      tags:
+      - documentation
+  /api/v1/gait-analysis/analysis-enhanced/{analysis_id}:
+    get:
+      description: 拡張分析結果取得エンドポイント
+      operationId: get_enhanced_analysis_result_api_v1_gait_analysis_analysis_enhanced__analysis_id__get
+      parameters:
+      - in: path
+        name: analysis_id
+        required: true
+        schema:
+          title: Analysis Id
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Enhanced Analysis Result
+      tags:
+      - enhanced-gait-analysis
+  /api/v1/gait-analysis/analysis/{analysis_id}:
+    get:
+      description: "分析結果取得エンドポイント\n\nArgs:\n    analysis_id: 分析ID\n\nReturns:\n  \
+        \  dict: 分析結果または状態"
+      operationId: get_analysis_result_api_v1_gait_analysis_analysis__analysis_id__get
+      parameters:
+      - in: path
+        name: analysis_id
+        required: true
+        schema:
+          title: Analysis Id
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Analysis Result
+      tags:
+      - gait-analysis
+  /api/v1/gait-analysis/analyze:
+    post:
+      description: "歩行動画分析エンドポイント\n\nArgs:\n    video: アップロードされた歩行動画ファイル\n    user_height_cm:\
+        \ ユーザーの身長（cm）\n    analysis_mode: 分析モード（standard, detailed, quick）\n\nReturns:\n\
+        \    GaitAnalysisResponse: 歩行分析結果"
+      operationId: analyze_gait_api_v1_gait_analysis_analyze_post
+      parameters:
+      - in: query
+        name: user_height_cm
+        required: false
+        schema:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: User Height Cm
+      - in: query
+        name: analysis_mode
+        required: false
+        schema:
+          default: standard
+          title: Analysis Mode
+          type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Body_analyze_gait_api_v1_gait_analysis_analyze_post'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GaitAnalysisResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Analyze Gait
+      tags:
+      - gait-analysis
+  /api/v1/gait-analysis/analyze-enhanced:
+    post:
+      description: '拡張歩行分析エンドポイント
+
+
+        新機能を全て統合した最新の歩行分析API
+
+        - 30秒高速処理
+
+        - 33ランドマーク活用
+
+        - 代償動作検出
+
+        - バランス・重心分析
+
+        - 拡張出力（正規化グラフ、動画、PDFレポート）'
+      operationId: analyze_gait_enhanced_api_v1_gait_analysis_analyze_enhanced_post
+      parameters:
+      - description: ユーザー身長（cm）
+        in: query
+        name: user_height_cm
+        required: false
+        schema:
+          anyOf:
+          - type: number
+          - type: 'null'
+          description: ユーザー身長（cm）
+          title: User Height Cm
+      - description: 分析モード（standard/detailed/quick）
+        in: query
+        name: analysis_mode
+        required: false
+        schema:
+          default: detailed
+          description: 分析モード（standard/detailed/quick）
+          title: Analysis Mode
+          type: string
+      - description: カメラ位置（side/posterior/anterior）
+        in: query
+        name: camera_position
+        required: false
+        schema:
+          default: side
+          description: カメラ位置（side/posterior/anterior）
+          title: Camera Position
+          type: string
+      - description: 目標フレームレート
+        in: query
+        name: target_fps
+        required: false
+        schema:
+          default: 60
+          description: 目標フレームレート
+          title: Target Fps
+          type: integer
+      - description: デバイスタイプ（mobile/tablet/desktop）
+        in: query
+        name: device_type
+        required: false
+        schema:
+          default: mobile
+          description: デバイスタイプ（mobile/tablet/desktop）
+          title: Device Type
+          type: string
+      - description: 30秒最適化有効化
+        in: query
+        name: enable_30s_optimization
+        required: false
+        schema:
+          default: true
+          description: 30秒最適化有効化
+          title: Enable 30S Optimization
+          type: boolean
+      - description: 代償動作アラート有効化
+        in: query
+        name: enable_compensation_alerts
+        required: false
+        schema:
+          default: true
+          description: 代償動作アラート有効化
+          title: Enable Compensation Alerts
+          type: boolean
+      - description: バランス分析有効化
+        in: query
+        name: enable_balance_analysis
+        required: false
+        schema:
+          default: true
+          description: バランス分析有効化
+          title: Enable Balance Analysis
+          type: boolean
+      - description: 拡張出力生成有効化
+        in: query
+        name: generate_enhanced_output
+        required: false
+        schema:
+          default: true
+          description: 拡張出力生成有効化
+          title: Generate Enhanced Output
+          type: boolean
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Body_analyze_gait_enhanced_api_v1_gait_analysis_analyze_enhanced_post'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                title: Response Analyze Gait Enhanced Api V1 Gait Analysis Analyze
+                  Enhanced Post
+                type: object
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Analyze Gait Enhanced
+      tags:
+      - enhanced-gait-analysis
+  /api/v1/gait-analysis/capabilities:
+    get:
+      description: 拡張機能一覧取得エンドポイント
+      operationId: get_enhanced_capabilities_api_v1_gait_analysis_capabilities_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Get Enhanced Capabilities
+      tags:
+      - enhanced-gait-analysis
+  /api/v1/gait-analysis/demo-data:
+    get:
+      description: デモ用サンプルデータ取得エンドポイント
+      operationId: get_demo_data_api_v1_gait_analysis_demo_data_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Get Demo Data
+      tags:
+      - enhanced-gait-analysis
+  /api/v1/gait-analysis/download-report/{analysis_id}:
+    get:
+      description: 分析レポートダウンロードエンドポイント
+      operationId: download_analysis_report_api_v1_gait_analysis_download_report__analysis_id__get
+      parameters:
+      - in: path
+        name: analysis_id
+        required: true
+        schema:
+          title: Analysis Id
+          type: string
+      - description: レポート形式（pdf/video/json）
+        in: query
+        name: format
+        required: false
+        schema:
+          default: pdf
+          description: レポート形式（pdf/video/json）
+          title: Format
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Download Analysis Report
+      tags:
+      - enhanced-gait-analysis
+  /api/v1/gait-analysis/supported-formats:
+    get:
+      description: "サポートされている動画フォーマット一覧取得\n\nReturns:\n    dict: サポートフォーマット情報"
+      operationId: get_supported_formats_api_v1_gait_analysis_supported_formats_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Get Supported Formats
+      tags:
+      - gait-analysis
+  /api/v1/health:
+    get:
+      description: "システムヘルスチェック\n\nReturns:\n    dict: システム状態情報"
+      operationId: health_check_api_v1_health_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Health Check
+      tags:
+      - health
+  /api/v1/history/analyses:
+    get:
+      description: "ユーザーの分析履歴を取得\n\nArgs:\n    user_id: ユーザーID\n    limit: 取得件数制限（1-100）\n\
+        \    offset: オフセット\n    start_date: 開始日時\n    end_date: 終了日時\n    \nReturns:\n\
+        \    JSONResponse: 分析履歴リスト"
+      operationId: get_analysis_history_api_v1_history_analyses_get
+      parameters:
+      - description: ユーザーID
+        in: query
+        name: user_id
+        required: true
+        schema:
+          description: ユーザーID
+          title: User Id
+          type: string
+      - description: 取得件数制限
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 20
+          description: 取得件数制限
+          maximum: 100
+          minimum: 1
+          title: Limit
+          type: integer
+      - description: オフセット
+        in: query
+        name: offset
+        required: false
+        schema:
+          default: 0
+          description: オフセット
+          minimum: 0
+          title: Offset
+          type: integer
+      - description: 開始日時（ISO8601形式）
+        in: query
+        name: start_date
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: 開始日時（ISO8601形式）
+          title: Start Date
+      - description: 終了日時（ISO8601形式）
+        in: query
+        name: end_date
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: 終了日時（ISO8601形式）
+          title: End Date
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Analysis History
+      tags:
+      - history
+  /api/v1/history/analyses/{analysis_id}:
+    delete:
+      description: "分析結果を削除\n\nArgs:\n    analysis_id: 分析ID\n    user_id: ユーザーID\n\
+        \    \nReturns:\n    JSONResponse: 削除結果"
+      operationId: delete_analysis_api_v1_history_analyses__analysis_id__delete
+      parameters:
+      - in: path
+        name: analysis_id
+        required: true
+        schema:
+          title: Analysis Id
+          type: string
+      - description: ユーザーID
+        in: query
+        name: user_id
+        required: true
+        schema:
+          description: ユーザーID
+          title: User Id
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Delete Analysis
+      tags:
+      - history
+    get:
+      description: "特定の分析結果の詳細を取得\n\nArgs:\n    analysis_id: 分析ID\n    user_id: ユーザーID\n\
+        \    \nReturns:\n    JSONResponse: 分析結果詳細"
+      operationId: get_analysis_detail_api_v1_history_analyses__analysis_id__get
+      parameters:
+      - in: path
+        name: analysis_id
+        required: true
+        schema:
+          title: Analysis Id
+          type: string
+      - description: ユーザーID
+        in: query
+        name: user_id
+        required: true
+        schema:
+          description: ユーザーID
+          title: User Id
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Analysis Detail
+      tags:
+      - history
+  /api/v1/history/analyses/{analysis_id}/compare:
+    get:
+      description: "過去の分析結果と比較\n\nArgs:\n    analysis_id: 現在の分析ID\n    user_id: ユーザーID\n\
+        \    compare_with: 比較対象の分析ID（未指定の場合は直前の分析）\n    \nReturns:\n    JSONResponse:\
+        \ 比較結果"
+      operationId: compare_with_previous_api_v1_history_analyses__analysis_id__compare_get
+      parameters:
+      - in: path
+        name: analysis_id
+        required: true
+        schema:
+          title: Analysis Id
+          type: string
+      - description: ユーザーID
+        in: query
+        name: user_id
+        required: true
+        schema:
+          description: ユーザーID
+          title: User Id
+          type: string
+      - description: 比較対象の分析ID
+        in: query
+        name: compare_with
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: 比較対象の分析ID
+          title: Compare With
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Compare With Previous
+      tags:
+      - history
+  /api/v1/history/analyses/{analysis_id}/save:
+    post:
+      description: "分析結果を履歴に保存\n\nArgs:\n    analysis_id: 分析ID\n    user_id: ユーザーID\n\
+        \    analysis_result: 分析結果データ\n    video_info: 動画情報\n    \nReturns:\n    JSONResponse:\
+        \ 保存結果"
+      operationId: save_analysis_to_history_api_v1_history_analyses__analysis_id__save_post
+      parameters:
+      - in: path
+        name: analysis_id
+        required: true
+        schema:
+          title: Analysis Id
+          type: string
+      - description: ユーザーID
+        in: query
+        name: user_id
+        required: true
+        schema:
+          description: ユーザーID
+          title: User Id
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Body_save_analysis_to_history_api_v1_history_analyses__analysis_id__save_post'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Save Analysis To History
+      tags:
+      - history
+  /api/v1/history/statistics:
+    get:
+      description: "ユーザーの統計情報を取得\n\nArgs:\n    user_id: ユーザーID\n    \nReturns:\n \
+        \   JSONResponse: 統計情報"
+      operationId: get_user_statistics_api_v1_history_statistics_get
+      parameters:
+      - description: ユーザーID
+        in: query
+        name: user_id
+        required: true
+        schema:
+          description: ユーザーID
+          title: User Id
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get User Statistics
+      tags:
+      - history
+  /api/v1/monitoring/:
+    get:
+      description: リアルタイム監視ダッシュボードのHTML
+      operationId: get_monitoring_dashboard_api_v1_monitoring__get
+      responses:
+        '200':
+          content:
+            text/html:
+              schema:
+                type: string
+          description: Successful Response
+      summary: Get Monitoring Dashboard
+      tags:
+      - monitoring
+  /api/v1/monitoring/alerts/clear:
+    post:
+      description: アラートをクリア（管理者のみ）
+      operationId: clear_alerts_api_v1_monitoring_alerts_clear_post
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      security:
+      - HTTPBearer: []
+      summary: Clear Alerts
+      tags:
+      - monitoring
+  /api/v1/monitoring/metrics/current:
+    get:
+      description: 現在のメトリクスを取得（REST API）
+      operationId: get_current_metrics_api_v1_monitoring_metrics_current_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Get Current Metrics
+      tags:
+      - monitoring
+  /api/v1/monitoring/status:
+    get:
+      description: 監視システムの状態を取得
+      operationId: get_monitoring_status_api_v1_monitoring_status_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Get Monitoring Status
+      tags:
+      - monitoring
+  /api/v1/performance/alerts:
+    get:
+      description: パフォーマンスアラートを取得
+      operationId: get_performance_alerts_api_v1_performance_alerts_get
+      parameters:
+      - description: 取得する時間範囲（時間）
+        in: query
+        name: hours
+        required: false
+        schema:
+          default: 24
+          description: 取得する時間範囲（時間）
+          title: Hours
+          type: integer
+      - description: アラートの重要度フィルタ
+        in: query
+        name: severity
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: アラートの重要度フィルタ
+          title: Severity
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Performance Alerts
+      tags:
+      - performance
+  /api/v1/performance/dashboard:
+    get:
+      description: パフォーマンスダッシュボードのHTML
+      operationId: get_dashboard_html_api_v1_performance_dashboard_get
+      responses:
+        '200':
+          content:
+            text/html:
+              schema:
+                type: string
+          description: Successful Response
+      summary: Get Dashboard Html
+      tags:
+      - performance
+  /api/v1/performance/metrics/cache:
+    get:
+      description: キャッシュメトリクスを取得
+      operationId: get_cache_metrics_api_v1_performance_metrics_cache_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Get Cache Metrics
+      tags:
+      - performance
+  /api/v1/performance/metrics/performance:
+    get:
+      description: パフォーマンスメトリクスを取得
+      operationId: get_performance_metrics_api_v1_performance_metrics_performance_get
+      parameters:
+      - description: 特定のメトリクス名
+        in: query
+        name: metric_name
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: 特定のメトリクス名
+          title: Metric Name
+      - description: 取得する時間範囲（時間）
+        in: query
+        name: hours
+        required: false
+        schema:
+          default: 1
+          description: 取得する時間範囲（時間）
+          title: Hours
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Performance Metrics
+      tags:
+      - performance
+  /api/v1/performance/metrics/system:
+    get:
+      description: システムメトリクスを取得
+      operationId: get_system_metrics_api_v1_performance_metrics_system_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Get System Metrics
+      tags:
+      - performance
+  /api/v1/performance/metrics/tasks:
+    get:
+      description: タスクキューメトリクスを取得
+      operationId: get_task_metrics_api_v1_performance_metrics_tasks_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Get Task Metrics
+      tags:
+      - performance
+  /api/v1/performance/metrics/video_processing:
+    get:
+      description: 動画処理メトリクスを取得
+      operationId: get_video_processing_metrics_api_v1_performance_metrics_video_processing_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Get Video Processing Metrics
+      tags:
+      - performance
+  /api/v1/performance/optimization/apply:
+    post:
+      description: 最適化を適用
+      operationId: apply_optimization_api_v1_performance_optimization_apply_post
+      parameters:
+      - in: query
+        name: optimization_type
+        required: true
+        schema:
+          title: Optimization Type
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - HTTPBearer: []
+      summary: Apply Optimization
+      tags:
+      - performance
+  /api/v1/performance/optimization/suggestions:
+    get:
+      description: 最適化提案を取得
+      operationId: get_optimization_suggestions_api_v1_performance_optimization_suggestions_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Get Optimization Suggestions
+      tags:
+      - performance
+  /api/v1/ready:
+    get:
+      description: "レディネスチェック（Kubernetes用）\n\nReturns:\n    dict: サービス準備状態"
+      operationId: readiness_check_api_v1_ready_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Readiness Check
+      tags:
+      - health
+  /api/v1/reports/generate/base64:
+    post:
+      description: "Base64エンコードされた画像を生成（Web表示用）\n\nArgs:\n    analysis_result: 歩行分析結果データ\n\
+        \    \nReturns:\n    JSONResponse: Base64エンコードされた画像データ"
+      operationId: generate_base64_image_api_v1_reports_generate_base64_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GaitAnalysisResponse'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Generate Base64 Image
+      tags:
+      - reports
+  /api/v1/reports/generate/custom:
+    post:
+      description: "カスタムレポートを生成\n\nArgs:\n    analysis_result: 歩行分析結果データ\n    template_config:\
+        \ レポート設定\n    patient_info: 患者情報（オプション）\n    background_tasks: バックグラウンドタスク\n\
+        \    \nReturns:\n    FileResponse: 生成されたレポートファイル"
+      operationId: generate_custom_report_api_v1_reports_generate_custom_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Body_generate_custom_report_api_v1_reports_generate_custom_post'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Generate Custom Report
+      tags:
+      - reports
+  /api/v1/reports/generate/pdf:
+    post:
+      description: "PDF形式の詳細レポートを生成\n\nArgs:\n    analysis_result: 歩行分析結果データ\n   \
+        \ patient_info: 患者情報（オプション）\n    background_tasks: バックグラウンドタスク\n    \nReturns:\n\
+        \    FileResponse: 生成されたPDFファイル"
+      operationId: generate_pdf_report_api_v1_reports_generate_pdf_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Body_generate_pdf_report_api_v1_reports_generate_pdf_post'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Generate Pdf Report
+      tags:
+      - reports
+  /api/v1/reports/generate/png:
+    post:
+      description: "PNG形式のサマリー画像を生成\n\nArgs:\n    analysis_result: 歩行分析結果データ\n   \
+        \ width: 画像幅（ピクセル）\n    height: 画像高さ（ピクセル）\n    background_tasks: バックグラウンドタスク\n\
+        \    \nReturns:\n    FileResponse: 生成されたPNG画像ファイル"
+      operationId: generate_png_summary_api_v1_reports_generate_png_post
+      parameters:
+      - in: query
+        name: width
+        required: false
+        schema:
+          default: 1200
+          title: Width
+          type: integer
+      - in: query
+        name: height
+        required: false
+        schema:
+          default: 800
+          title: Height
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GaitAnalysisResponse'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Generate Png Summary
+      tags:
+      - reports
+  /api/v1/reports/status/{analysis_id}:
+    get:
+      description: "レポート生成状況を確認\n\nArgs:\n    analysis_id: 分析ID\n    \nReturns:\n\
+        \    JSONResponse: レポート状況"
+      operationId: get_report_status_api_v1_reports_status__analysis_id__get
+      parameters:
+      - in: path
+        name: analysis_id
+        required: true
+        schema:
+          title: Analysis Id
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Report Status
+      tags:
+      - reports
+  /api/v1/reports/templates:
+    get:
+      description: "利用可能なレポートテンプレート一覧を取得\n\nReturns:\n    JSONResponse: テンプレート情報"
+      operationId: get_report_templates_api_v1_reports_templates_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Get Report Templates
+      tags:
+      - reports
+servers:
+- description: Development server
+  url: http://localhost:8000
+- description: Production server
+  url: https://api.gaitanalysis.com

@@ -1,0 +1,46 @@
+services:
+  - type: web
+    name: gait-backend
+    env: docker
+    dockerfilePath: backend/Dockerfile
+    autoDeploy: true
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: LIGHT_MODE
+        value: "1"   # 初回は軽量モードで安定起動。確認後に "0" へ変更
+      - key: DISABLE_TASK_QUEUE
+        value: "1"   # 初期は無効。必要に応じて "0"
+      - key: LOG_LEVEL
+        value: INFO
+      - key: ALLOWED_ORIGINS
+        value: '["https://gait-frontend.onrender.com", "http://localhost:3000", "http://localhost:8080"]'  # デプロイ後に実URLへ調整可
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: gait-postgres
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: gait-redis
+          type: redis
+          property: connectionString
+
+  - type: static
+    name: gait-frontend
+    env: static
+    buildCommand: bash deploy/render-frontend-build.sh
+    publishPath: frontend/build/web
+    # Flutter Webのビルド時にバックエンドのURLを埋め込む
+    envVars:
+      - key: API_BASE_URL
+        value: https://gait-backend.onrender.com/api/v1  # バックエンド作成後、実URLに合わせて調整
+
+databases:
+  - name: gait-postgres
+    databaseName: gait_analysis_prod
+    user: gait_user
+
+redis:
+  - name: gait-redis
+    ipAllowList: []
